@@ -7,7 +7,7 @@ module NetSuite
     end
 
     def attributes
-      @attributes ||= {}
+      Thread.current[:netsuite_config] ||= {}
     end
 
     def connection(params={}, credentials={})
