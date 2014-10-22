@@ -58,12 +58,17 @@ module NetSuite
       end
 
       def response_body
-        @response_body ||= @response.body[:get_list_response][:read_response_list][:read_response]
+        @response_body ||= begin
+                             resp = @response.body[:get_list_response][:read_response_list][:read_response]
+                             resp.is_a?(Array) ? resp : [resp]
+                           end
       end
 
       def success?
         # each returned record has its own status; for now if one fails, the entire operation has failed
-        @success ||= response_body.detect { |r| r[:status][:@is_success] != 'true' }.nil?
+        @success ||= response_body.detect { |r|
+          r[:status][:@is_success] != 'true'
+        }.nil?
       end
 
       module Support
